@@ -8,9 +8,10 @@ const {graphqlHTTP} = require('express-graphql')
 const mongoose = require('mongoose')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-
+const schema = require('./Schema/Schema.js')
 var app = express();
-
+const Books = require('./models/Books')
+const Authors = require('./models/Authors')
 // view engine setup
 mongoose.connect(process.env.MONGODBATLAS).then(()=>{
   console.log('Database is connected')
@@ -23,7 +24,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-// app.use('graphql',graphqlHTTP())
+app.use('/graphql',graphqlHTTP({
+  schema,
+  graphiql:true
+}))
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 
